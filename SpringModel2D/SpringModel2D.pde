@@ -1,5 +1,5 @@
 /*
-<copyright> Андрей Бочков
+Автор: Бочков Андрей.
 Программа симуляции волн
 Управление:
   Пробел: Пауза/Симуляция. Изначально пауза.
@@ -11,6 +11,7 @@
     Изначально режим 0.
   Клавиша W/Ц: "Заблокировать" клетку.
   Клавиша E/У: Создать подушку. Подушки пропускают волны, частично гася их.
+  Клавиша A/Ф: Создать генератор.
   Клавиша R/К: Очистить поле
   
   ЛКМ (левая кнопка мыши): Увеличить значение нажатой клетки.
@@ -27,6 +28,8 @@ class Spring {
       vel=0;
     } else if (state == 2) {
       pos += vel*0.2;
+    } else if (state == 3) {
+      pos = sin(frameCount/10)*100;
     } else {
       pos += vel;
     }
@@ -115,9 +118,7 @@ void draw() {
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
           fill(plus*0.2+50, 50, minus*0.2+50);
         } else if (Matrix[i][j].state == 3) {
-          plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
-          minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
-          fill(200-minus*0.1, 200-minus*0.1-plus*0.1, 200-plus*0.1);
+          fill(200);
         } else {
           plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
@@ -136,9 +137,7 @@ void draw() {
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
           fill(plus*0.2+50, 50, minus*0.2+50);
         } else if (Matrix[i][j].state == 3) {
-          plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
-          minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
-          fill(200-minus*0.1, 200-minus*0.1-plus*0.1, 200-plus*0.1);
+          fill(200);
         } else {
           plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
