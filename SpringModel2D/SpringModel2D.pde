@@ -12,6 +12,7 @@
   Клавиша W/Ц: "Заблокировать" клетку.
   Клавиша E/У: Создать подушку. Подушки пропускают волны, частично гася их.
   Клавиша A/Ф: Создать генератор.
+  Клавиша S/Ы: Создать отрицательный генератор. Отрицательный генератор работает в противофазе с обычным.
   Клавиша R/К: Очистить поле
   
   ЛКМ (левая кнопка мыши): Увеличить значение нажатой клетки.
@@ -30,13 +31,13 @@ class Spring {
       pos += vel*0.2;
     } else if (state == 3) {
       pos = sin(frameCount/10)*100;
+    } else if (state == 4) {
+      pos = -sin(frameCount/10)*100;
     } else {
       pos += vel;
     }
     
-    if (abs(pos) < 1) {
-      pos = 0.0;
-    } else if (pos > 10000) {
+    if (pos > 10000) {
       pos = 10000;
     } else if (pos < -10000) {
       pos = -10000;
@@ -119,6 +120,8 @@ void draw() {
           fill(plus*0.2+50, 50, minus*0.2+50);
         } else if (Matrix[i][j].state == 3) {
           fill(200);
+        } else if (Matrix[i][j].state == 4) {
+          fill(150);
         } else {
           plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
@@ -138,6 +141,8 @@ void draw() {
           fill(plus*0.2+50, 50, minus*0.2+50);
         } else if (Matrix[i][j].state == 3) {
           fill(200);
+        } else if (Matrix[i][j].state == 4) {
+          fill(150);
         } else {
           plus = map(max(Matrix[i][j].pos, 0), 100, 0, 255, 0);
           minus = map(min(Matrix[i][j].pos, 0), -100, 0, 255, 0);
@@ -272,6 +277,17 @@ void keyPressed() {
         modifying = true;
         if (Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].state == 0) {
           modify_temp = 3;
+        } else {
+           modify_temp = 0;
+        }
+      } else {
+        Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].state = modify_temp;
+      }
+    } else if (key == 's' || key == 'ы') {
+      if (!modifying) {
+        modifying = true;
+        if (Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].state == 0) {
+          modify_temp = 4;
         } else {
            modify_temp = 0;
         }
