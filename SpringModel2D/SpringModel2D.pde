@@ -4,7 +4,8 @@
 Управление:
   Пробел: Пауза/Симуляция. Изначально пауза.
   Символ звёздочки (*): Проигрыш одного кадра симуляции. Только если симуляция на паузе.
-  Цифры (1 - 9), Символы "+" и "-": влияние на динамику симуляции (убывание волн).
+  Цифры (1 - 5), клавиши "▲" и "▼": влияние на динамику симуляции (убывание волн).
+  Клавиши "◄" и "►": Изменение частоты генераторов (не влияет на уже выставленные на поле).
   Клавиша Q/Й: Переключение режимов:
     0. Визуализация волн
     1. Накопление значения
@@ -20,7 +21,7 @@
 */
 
 class Spring {
-  private float pos, vel;
+  private float pos, vel, freq = 10;
   private int state;
   public Spring(){pos = 0;vel = 0;}
   void run() {
@@ -30,9 +31,9 @@ class Spring {
     } else if (state == 2) {
       pos += vel*0.2;
     } else if (state == 3) {
-      pos = sin(frameCount/10)*100;
+      pos = sin(frameCount/freq)*100;
     } else if (state == 4) {
-      pos = -sin(frameCount/10)*100;
+      pos = -sin(frameCount/freq)*100;
     } else {
       pos += vel;
     }
@@ -48,7 +49,7 @@ class Spring {
 public Spring[][] Matrix;
 public float[][] Prev, Heat;
 public float temp = 0.0, plus, minus, heat;
-public int cellSize = 10, wcel, hcel, counterText = 0, mode = 0, modify_temp = -1;
+public int cellSize = 10, wcel, hcel, counterText = 0, mode = 0, modify_temp = -1, newFreq = 10;
 public String[] modes = {"Стандарт", "Накопление"};
 public boolean pause = true, keyPress = false, modifying = false, showText = false, oneframe = false;
 public String textValue;
@@ -81,6 +82,7 @@ void draw() {
   if (!pause || oneframe) {
     for (int i = 1; i < wcel-1; i ++) {
       for (int j = 1; j < hcel-1; j ++) {
+        if (Matrix[i][j].state != 1 && Matrix[i][j].state != 3 && Matrix[i][j].state != 4);
         Prev[i][j] = Matrix[i][j].vel;
       }
     }
@@ -204,18 +206,14 @@ void keyPressed() {
       if (decline < 0.5) {
         decline += 0.01;
         decline = round(decline*1000.0)/1000.0;
-        textValue = "Убывание: " + str(decline);
       }
-      showText = true;
-      counterText = 0;
+      showText("Убывание: " + str(decline));
     } else if (key == '-') {
       if (decline > 0.01) {
         decline -= 0.01;
         decline = round(decline*1000.0)/1000.0;
-        textValue = "Убывание: " + str(decline);
       }
-      showText = true;
-      counterText = 0;
+      showText("Убывание: " + str(decline));
     } else if (key == '*') {
       oneframe = true;
       keyPress = true;
@@ -282,6 +280,7 @@ void keyPressed() {
         }
       } else {
         Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].state = modify_temp;
+        Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].freq = newFreq;
       }
     } else if (key == 's' || key == 'ы') {
       if (!modifying) {
@@ -293,6 +292,7 @@ void keyPressed() {
         }
       } else {
         Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].state = modify_temp;
+        Matrix[floor(mouseX / cellSize)][floor(mouseY / cellSize)].freq = newFreq;
       }
     } else if (key == 'r' || key == 'к') {
       for (int i = 0; i < wcel; i ++) {
@@ -305,6 +305,16 @@ void keyPressed() {
         }
       }
       keyPress = true;
+    } else if (keyCode == LEFT) {
+      if (newFreq < 20) {
+        newFreq += 1;
+      }
+      showText("Частота новых генераторов: " + str(21-newFreq));
+    } else if (keyCode == RIGHT) {
+      if (newFreq > 1) {
+        newFreq -= 1;
+      }
+      showText("Частота новых генераторов: " + str(21-newFreq));
     } else {
       showText("Команда не существует");
     }
