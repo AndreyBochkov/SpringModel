@@ -21,7 +21,7 @@
 */
 
 class Spring {
-  private float pos, vel, freq = 10;
+  private float pos, vel, freq = 2;
   private int state;
   public Spring(){pos = 0;vel = 0;}
   void run() {
@@ -31,9 +31,9 @@ class Spring {
     } else if (state == 2) {
       pos += vel*0.2;
     } else if (state == 3) {
-      pos = sin(frameCount/freq)*100;
+      pos = sin(frameCount/fR*freq*TWO_PI)*100;
     } else if (state == 4) {
-      pos = -sin(frameCount/freq)*100;
+      pos = -sin(frameCount/fR*freq*TWO_PI)*100;
     } else {
       pos += vel;
     }
@@ -48,8 +48,9 @@ class Spring {
 
 public Spring[][] Matrix;
 public float[][] Prev, Heat;
-public float temp = 0.0, plus, minus, heat;
-public int cellSize = 10, wcel, hcel, counterText = 0, mode = 0, modify_temp = -1, newFreq = 10;
+public float temp = 0.0, plus, minus, heat, newFreq = 2.0, fR;
+public int wcel, hcel, counterText = 0;
+private byte cellSize = 10, mode = 0, modify_temp = -1;
 public String[] modes = {"Стандарт", "Накопление"};
 public boolean pause = true, keyPress = false, modifying = false, showText = false, oneframe = false;
 public String textValue;
@@ -75,6 +76,7 @@ void setup() {
   }
   Prev = new float[wcel][hcel];
   Heat = new float[wcel][hcel];
+  fR = frameRate;
 }
 
 void draw() {
@@ -308,16 +310,18 @@ void keyPressed() {
         }
       }
       keyPress = true;
-    } else if (keyCode == LEFT) {
-      if (newFreq < 20) {
-        newFreq += 1;
-      }
-      showText("Частота новых генераторов: " + str(21-newFreq));
     } else if (keyCode == RIGHT) {
-      if (newFreq > 1) {
-        newFreq -= 1;
+      if (newFreq < 5) {
+        newFreq += 0.5;
       }
-      showText("Частота новых генераторов: " + str(21-newFreq));
+      newFreq = round(newFreq*10.0)/10.0;
+      showText("Частота новых генераторов: " + str(newFreq) + " Hz");
+    } else if (keyCode == LEFT) {
+      if (newFreq > 0) {
+        newFreq -= 0.5;
+      }
+      newFreq = round(newFreq*10.0)/10.0;
+      showText("Частота новых генераторов: " + str(newFreq) + " Hz");
     } else {
       showText("Команда не существует");
     }
