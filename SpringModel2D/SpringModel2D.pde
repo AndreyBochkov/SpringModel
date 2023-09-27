@@ -31,9 +31,9 @@ class Spring {
     } else if (state == 2) {
       pos += vel*0.2;
     } else if (state == 3) {
-      pos = sin(frameCount/fR*freq*TWO_PI)*100;
+      pos = sin(fC/fR*freq*TWO_PI)*100;
     } else if (state == 4) {
-      pos = -sin(frameCount/fR*freq*TWO_PI)*100;
+      pos = -sin(fC/fR*freq*TWO_PI)*100;
     } else {
       pos += vel;
     }
@@ -49,7 +49,7 @@ class Spring {
 public Spring[][] Matrix;
 public float[][] Prev, Heat;
 public float temp = 0.0, plus, minus, heat, newFreq = 2.0, fR;
-public int wcel, hcel, counterText = 0;
+public int wcel, hcel, counterText = 0, fC = 0;
 private byte cellSize = 10, mode = 0, modify_temp = -1;
 public String[] modes = {"Стандарт", "Накопление"};
 public boolean pause = true, keyPress = false, modifying = false, showText = false, oneframe = false;
@@ -114,6 +114,8 @@ void draw() {
     if (oneframe) {
       oneframe = false;
     }
+    
+    fC ++;
   }
   
   if (mode == 0) {
